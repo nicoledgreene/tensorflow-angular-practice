@@ -39,17 +39,21 @@ export class HandGestureService {
     return this._stream;
   }
 
+  //Initializes the canvas and video 
   initialize(canvas: HTMLCanvasElement, video: HTMLVideoElement): void {
     this._dimensions = [video.width, video.height];
     navigator.mediaDevices
       .getUserMedia({ video: true })
+      //this is where we load the machine learning model
       .then((stream) => {
         this._stream = stream;
+        //recognizes the hand pose and returns landmarks of individual fingers (from Tensorflow Handpose model)
         return handpose.load();
       })
-      .then((model) => {
+      .then((model: handpose.HandPose) => {
         const context = canvas.getContext('2d');
         context?.clearRect(0, 0, video.width, video.height);
+        //define context clue
         if(context) {
           context.strokeStyle = 'red';
           context.fillStyle = 'red';
@@ -57,9 +61,10 @@ export class HandGestureService {
 
         context?.translate(canvas.width, 0);
         context?.scale(-1, 1);
+
         const runDetection = () => {
           model.estimateHands(video).then((predictions) => {
-            // Render
+            // Render visual clue for the user for our context on the video frame
             context?.drawImage(
               video,
               0,
@@ -73,11 +78,13 @@ export class HandGestureService {
             );
             if (predictions && predictions[0]) {
               drawKeypoints(context, predictions[0].landmarks);
+              //If hands are detected, let's run our function to process the gesture and pass the finger landmarks
               this._processGesture(predictions[0].landmarks);
             }
             requestAnimationFrame(runDetection);
           });
         };
+        
         runDetection();
       })
       .catch((err) => {

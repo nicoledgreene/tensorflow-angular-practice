@@ -38,12 +38,16 @@ for(let finger of [fp.Finger.Index, fp.Finger.Middle, fp.Finger.Ring])  {
 }
 
 const loveGesture = new fp.GestureDescription('love');
-//expect thumb, index and pinky to be up
-for(let finger of [fp.Finger.Thumb, fp.Finger.Index, fp.Finger.Pinky])  {
-  loveGesture.addDirection(finger, fp.FingerDirection.VerticalUp, 1.0);
-  loveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpLeft, 0.9);
-  loveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpRight, 0.9);
+//expect thumb to be vertically up
+loveGesture.addDirection(fp.Finger.Thumb, fp.FingerDirection.DiagonalUpLeft, 1.0);
+loveGesture.addDirection(fp.Finger.Thumb, fp.FingerDirection.DiagonalUpRight, 1.0);
+loveGesture.addDirection(fp.Finger.Thumb, fp.FingerDirection.VerticalUp, 0.8);
 
+//expect index and pinky to be up
+for(let finger of [fp.Finger.Index, fp.Finger.Pinky])  {
+  loveGesture.addDirection(finger, fp.FingerDirection.VerticalUp, 1.0);
+  loveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpLeft, 0.8);
+  loveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpRight, 0.8);
 }
 //expect other 2 fingers to be curled
 for(let finger of [fp.Finger.Middle, fp.Finger.Ring])  {
