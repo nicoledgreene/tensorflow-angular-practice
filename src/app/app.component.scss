@@ -1,0 +1,17 @@
+video, canvas {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .emoji {
+        margin-left: 40px;
+        width: 100px;
+        img {
+            width: 100%;
+        }
+    }
+}
