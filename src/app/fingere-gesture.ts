@@ -19,14 +19,43 @@ const highFiveGesture = new fp.GestureDescription('high_five');
 //Expect all fingers to be pointing diagonally up or straight up
 for(let finger of [fp.Finger.Thumb, fp.Finger.Index, fp.Finger.Middle, fp.Finger.Ring, fp.Finger.Pinky])  {
   highFiveGesture.addDirection(finger, fp.FingerDirection.VerticalUp, 1.0);
-  highFiveGesture.addDirection(fp.Finger.Thumb, fp.FingerDirection.DiagonalUpLeft, 1.0);
-  highFiveGesture.addDirection(fp.Finger.Thumb, fp.FingerDirection.DiagonalUpRight, 1.0);
+  highFiveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpLeft, 1.0);
+  highFiveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpRight, 1.0);
 }
 
+const shakaGesture = new fp.GestureDescription('shaka');
+//expect thumb and pinky to be diagonal out
+for(let finger of [fp.Finger.Thumb, fp.Finger.Pinky])  {
+  shakaGesture.addDirection(finger, fp.FingerDirection.DiagonalUpLeft, 1.0);
+  shakaGesture.addDirection(finger, fp.FingerDirection.DiagonalUpRight, 1.0);
+
+}
+//expect other 3 fingers to be curled
+for(let finger of [fp.Finger.Index, fp.Finger.Middle, fp.Finger.Ring])  {
+  shakaGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
+  shakaGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.8);
+
+}
+
+const loveGesture = new fp.GestureDescription('love');
+//expect thumb, index and pinky to be up
+for(let finger of [fp.Finger.Thumb, fp.Finger.Index, fp.Finger.Pinky])  {
+  loveGesture.addDirection(finger, fp.FingerDirection.VerticalUp, 1.0);
+  loveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpLeft, 0.9);
+  loveGesture.addDirection(finger, fp.FingerDirection.DiagonalUpRight, 0.9);
+
+}
+//expect other 2 fingers to be curled
+for(let finger of [fp.Finger.Middle, fp.Finger.Ring])  {
+  loveGesture.addCurl(finger, fp.FingerCurl.FullCurl, 1.0);
+  loveGesture.addCurl(finger, fp.FingerCurl.HalfCurl, 0.8);
+}
 
 export const GE = new fp.GestureEstimator([
   fp.Gestures.VictoryGesture,
   fp.Gestures.ThumbsUpGesture,
   thumbsDownGesture,
-  highFiveGesture
+  highFiveGesture,
+  shakaGesture,
+  loveGesture
 ]);
