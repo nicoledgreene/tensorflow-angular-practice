@@ -5,7 +5,7 @@ import * as handpose from '@tensorflow-models/handpose';
 import '@tensorflow/tfjs-backend-webgl';
 import '@tensorflow/tfjs-backend-cpu';
 import { drawKeypoints } from './hand-renderer';
-import { GE } from './fingere-gesture';
+import { GE } from './fingerpose';
 
 interface GestureMapInterface {
   [key: string]: Gesture
@@ -15,10 +15,12 @@ const GestureMap: GestureMapInterface = {
   thumbs_up: 'thumbs_up',
   victory: 'victory',
   thumbs_down: 'thumbs_down',
-  high_five: 'high_five'
+  high_five: 'high_five',
+  shaka: 'shaka',
+  love: 'love'
 };
 
-type Gesture =  'victory' | 'thumbs_up' | 'thumbs_down' | 'none' | 'high_five';
+type Gesture =  'victory' | 'thumbs_up' | 'thumbs_down' | 'none' | 'high_five' | 'shaka' | 'love';
 type Size = [number, number];
 type Point = [number, number];
 type Rect = { topLeft: [number, number]; bottomRight: [number, number] };
@@ -76,15 +78,42 @@ export class HandGestureService {
               canvas.width,
               canvas.height
             );
-            if (predictions && predictions[0]) {
+            //predictions returns the following array of objects:
+            //[
+            // {
+              // {
+              //   handInViewConfidence: 1, // The probability of a hand being present.
+              //   boundingBox: { // The bounding box surrounding the hand.
+              //     topLeft: [162.91, -17.42],
+              //     bottomRight: [548.56, 368.23],
+              //   },
+              //   landmarks: [ // The 3D coordinates of each hand landmark.
+              //     [472.52, 298.59, 0.00],
+              //     [412.80, 315.64, -6.18],
+              //     ...
+              //   ],
+              //   annotations: { // Semantic groupings of the `landmarks` coordinates.
+              //     thumb: [
+              //       [412.80, 315.64, -6.18]
+              //       [350.02, 298.38, -7.14],
+              //       ...
+              //     ],
+              //     ...
+              //   }
+            // }
+            //]
+            if (predictions && predictions[0] && predictions[0].handInViewConfidence >= 0.99) {
+              // Each hand object contains a `landmarks` property,
+              // which is an array of 21 3-D landmarks.
               drawKeypoints(context, predictions[0].landmarks);
               //If hands are detected, let's run our function to process the gesture and pass the finger landmarks
               this._processGesture(predictions[0].landmarks);
             }
+            // tells the browser that you wish to perform an animation and requests that the browser calls a specified function to update an animation before the next repaint.
             requestAnimationFrame(runDetection);
           });
         };
-        
+
         runDetection();
       })
       .catch((err) => {
@@ -98,8 +127,7 @@ export class HandGestureService {
     for (const g of gestures) {
       if(g.name !== this._lastGesture) {
         this._lastGesture = g.name;
-        this._gesture$.next(g.name); 
-        console.log(g);
+        this._gesture$.next(g.name);
       }
     }
   }

@@ -27,20 +27,14 @@ export class AppComponent implements AfterViewInit {
   });
   
   constructor(private _recognizer: HandGestureService) {
-    // this._recognizer.gesture$
-    //   .pipe(
-    //     filter((value) => value === 'ok'),
-    //     withLatestFrom(this.selection$)
-    //   )
-    //   .subscribe(([_, page]) => {console.log(page)});
+
   }
 
   get stream(): MediaStream {
     return this._recognizer.stream;
   }
 
-  ngAfterViewInit(): void {
-    tick;
+  ngAfterViewInit(): void {;
     this.loadData();
   }
 
